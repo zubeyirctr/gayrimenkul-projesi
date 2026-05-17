@@ -1,0 +1,28 @@
+openapi: 3.0.0
+info:
+  title: Gayrimenkul Yönetim API
+  version: 1.0.0
+  [cite_start]description: Sistem Analizi ve Tasarımı Dersi API Dokümantasyonu [cite: 40]
+paths:
+  /api/properties:
+    get:
+      [cite_start]summary: Tüm mülkleri listeler [cite: 19]
+      responses:
+        '200':
+          [cite_start]description: Başarılı liste [cite: 21]
+    post:
+      [cite_start]summary: Yeni mülk ekler [cite: 19]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                title:
+                  type: string
+                price:
+                  type: number
+      responses:
+        '201':
+          [cite_start]description: Mülk başarıyla oluşturuldu [cite: 21]
