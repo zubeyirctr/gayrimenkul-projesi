@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Giriş Yap — Gayrimenkul Yönetim</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body class="auth-page">
+  <div class="auth-box">
+    <div class="auth-logo">
+      <div class="auth-logo-icon">🏠</div>
+      <div class="auth-logo-text">
+        Gayrimenkul
+        <span>Yönetim Sistemi</span>
+      </div>
+    </div>
+
+    <h1 class="auth-title">Hoş geldiniz</h1>
+    <p class="auth-subtitle">Hesabınıza giriş yapın</p>
+
+    <div id="alertBox" class="alert alert-error alert-hidden"></div>
+
+    <form id="loginForm" novalidate>
+      <div class="form-group">
+        <label class="form-label" for="email">Email</label>
+        <input type="email" id="email" class="form-input"
+               placeholder="ornek@email.com" autocomplete="email">
+      </div>
+
+      <div class="form-group">
+        <label class="form-label" for="password">Şifre</label>
+        <input type="password" id="password" class="form-input"
+               placeholder="••••••••" autocomplete="current-password">
+      </div>
+
+      <button type="submit" id="submitBtn" class="btn btn-primary btn-full">
+        Giriş Yap
+      </button>
+    </form>
+
+    <div class="auth-footer">
+      Hesabınız yok mu? <a href="register.html">Kayıt olun</a>
+    </div>
+  </div>
+
+  <script>
+    if (localStorage.getItem('token')) window.location.href = 'index.html';
+
+    const alertBox  = document.getElementById('alertBox');
+    const submitBtn = document.getElementById('submitBtn');
+
+    function showError(msg) {
+      alertBox.textContent = msg;
+      alertBox.className = 'alert alert-error';
+    }
+
+    document.getElementById('loginForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      alertBox.className = 'alert alert-error alert-hidden';
+
+      const email    = document.getElementById('email').value.trim();
+      const password = document.getElementById('password').value;
+
+      if (!email)    return showError('Email adresi zorunludur.');
+      if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) return showError('Geçerli bir email adresi girin.');
+      if (!password) return showError('Şifre zorunludur.');
+
+      submitBtn.disabled    = true;
+      submitBtn.textContent = 'Giriş yapılıyor…';
+
+      try {
+        const res  = await fetch('/api/auth/login', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email, password })
+        });
+        const data = await res.json();
+
+        if (!res.ok) { showError(data.error || 'Giriş başarısız.'); return; }
+
+        localStorage.setItem('token', data.token);
+        localStorage.setItem('user',  JSON.stringify(data.user));
+        window.location.href = 'index.html';
+      } catch {
+        showError('Sunucuya bağlanılamadı. Lütfen tekrar deneyin.');
+      } finally {
+        submitBtn.disabled    = false;
+        submitBtn.textContent = 'Giriş Yap';
+      }
+    });
+  </script>
+</body>
+</html>

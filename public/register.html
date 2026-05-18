@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Kayıt Ol — Gayrimenkul Yönetim</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body class="auth-page">
+  <div class="auth-box">
+    <div class="auth-logo">
+      <div class="auth-logo-icon">🏠</div>
+      <div class="auth-logo-text">
+        Gayrimenkul
+        <span>Yönetim Sistemi</span>
+      </div>
+    </div>
+
+    <h1 class="auth-title">Hesap oluşturun</h1>
+    <p class="auth-subtitle">Birkaç adımda başlayın</p>
+
+    <div id="alertBox" class="alert alert-error alert-hidden"></div>
+
+    <form id="registerForm" novalidate>
+      <div class="form-group">
+        <label class="form-label" for="username">Kullanıcı Adı</label>
+        <input type="text" id="username" class="form-input"
+               placeholder="johndoe" autocomplete="username">
+      </div>
+
+      <div class="form-group">
+        <label class="form-label" for="email">Email</label>
+        <input type="email" id="email" class="form-input"
+               placeholder="ornek@email.com" autocomplete="email">
+      </div>
+
+      <div class="form-group">
+        <label class="form-label" for="password">
+          Şifre
+          <small style="color:var(--text-muted);font-weight:400;margin-left:4px">(min. 6 karakter)</small>
+        </label>
+        <input type="password" id="password" class="form-input"
+               placeholder="••••••••" autocomplete="new-password">
+      </div>
+
+      <button type="submit" id="submitBtn" class="btn btn-primary btn-full">
+        Kayıt Ol
+      </button>
+    </form>
+
+    <div class="auth-footer">
+      Zaten hesabınız var mı? <a href="login.html">Giriş yapın</a>
+    </div>
+  </div>
+
+  <script>
+    if (localStorage.getItem('token')) window.location.href = 'index.html';
+
+    const alertBox  = document.getElementById('alertBox');
+    const submitBtn = document.getElementById('submitBtn');
+
+    function showError(msg) {
+      alertBox.textContent = msg;
+      alertBox.className = 'alert alert-error';
+    }
+
+    function showSuccess(msg) {
+      alertBox.textContent = msg;
+      alertBox.className = 'alert alert-success';
+    }
+
+    document.getElementById('registerForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      alertBox.className = 'alert alert-hidden';
+
+      const username = document.getElementById('username').value.trim();
+      const email    = document.getElementById('email').value.trim();
+      const password = document.getElementById('password').value;
+
+      if (!username) return showError('Kullanıcı adı zorunludur.');
+      if (!email)    return showError('Email adresi zorunludur.');
+      if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) return showError('Geçerli bir email adresi girin.');
+      if (!password) return showError('Şifre zorunludur.');
+      if (password.length < 6) return showError('Şifre en az 6 karakter olmalıdır.');
+
+      submitBtn.disabled    = true;
+      submitBtn.textContent = 'Kaydediliyor…';
+
+      try {
+        const res  = await fetch('/api/auth/register', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ username, email, password })
+        });
+        const data = await res.json();
+
+        if (!res.ok) { showError(data.error || 'Kayıt başarısız.'); return; }
+
+        showSuccess('Kayıt başarılı! Giriş sayfasına yönlendiriliyorsunuz…');
+        setTimeout(() => { window.location.href = 'login.html'; }, 1200);
+      } catch {
+        showError('Sunucuya bağlanılamadı. Lütfen tekrar deneyin.');
+      } finally {
+        submitBtn.disabled    = false;
+        submitBtn.textContent = 'Kayıt Ol';
+      }
+    });
+  </script>
+</body>
+</html>
