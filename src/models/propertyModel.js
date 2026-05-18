@@ -1,5 +1,5 @@
 
-let properties = [
+const properties = [
   {
     id: 1,
     title: "Kadıköy'de Deniz Manzaralı Daire",
