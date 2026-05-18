@@ -1,25 +1,98 @@
 <!DOCTYPE html>
 <html lang="tr">
 <head>
-    <meta charset="UTF-8">
-    <title>Gayrimenkul Yönetim Paneli</title>
-    <link rel="stylesheet" href="css/style.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Gayrimenkul Yönetim Sistemi</title>
+  <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
-    <div id="app">
-        <h1>Gayrimenkul Yönetim Paneli </h1>
-        
-        <input type="text" id="searchInput" placeholder="Mülk ara...">
 
-        <form id="propertyForm">
-            <input type="text" id="title" placeholder="Mülk Başlığı" required>
-            <input type="number" id="price" placeholder="Fiyat" required>
-            <button type="submit">Ekle </button>
-        </form>
-
-        <div id="propertyList">
-            </div>
+  <!-- Navbar -->
+  <nav class="navbar">
+    <div class="navbar-brand">
+      <div class="navbar-brand-icon">🏠</div>
+      Gayrimenkul Yönetim
     </div>
-    <script src="js/main.js"></script>
+    <div class="navbar-right">
+      <div class="navbar-user">
+        <div class="user-avatar" id="userInitial">?</div>
+        <span class="navbar-username" id="usernameDisplay">Kullanıcı</span>
+      </div>
+      <button class="btn btn-outline btn-sm" onclick="logout()">Çıkış</button>
+    </div>
+  </nav>
+
+  <div class="main-container">
+
+    <!-- Form Paneli -->
+    <div class="panel">
+      <div class="panel-header">
+        <span class="panel-title" id="formTitle">Yeni Mülk Ekle</span>
+      </div>
+
+      <div id="formAlert" class="alert alert-error alert-hidden"></div>
+
+      <form id="propertyForm" novalidate>
+        <div class="form-grid">
+          <div class="form-group">
+            <label class="form-label" for="title">Başlık</label>
+            <input type="text" id="title" class="form-input" placeholder="ör. 3+1 Daire Kadıköy">
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="price">Fiyat (₺)</label>
+            <input type="number" id="price" class="form-input" placeholder="ör. 500000" min="1">
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="type">Tür</label>
+            <select id="type" class="form-input form-select">
+              <option value="">Seçin…</option>
+              <option value="Satılık">Satılık</option>
+              <option value="Kiralık">Kiralık</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="location">Konum</label>
+            <input type="text" id="location" class="form-input" placeholder="ör. İstanbul, Kadıköy">
+          </div>
+        </div>
+
+        <div class="form-actions">
+          <button type="submit" id="submitBtn" class="btn btn-primary">Mülk Ekle</button>
+          <button type="button" id="cancelBtn" class="btn btn-secondary"
+                  style="display:none" onclick="cancelEdit()">İptal</button>
+        </div>
+      </form>
+    </div>
+
+    <!-- Mülk Listesi -->
+    <div class="panel">
+      <div class="properties-header">
+        <span class="section-title">Mülklerim</span>
+        <span class="badge" id="propertyCount">0 mülk</span>
+      </div>
+
+      <div class="search-bar">
+        <svg class="search-bar-icon" width="16" height="16" viewBox="0 0 24 24"
+             fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="11" cy="11" r="8"/>
+          <path d="m21 21-4.35-4.35"/>
+        </svg>
+        <input type="text" id="searchInput" class="search-input"
+               placeholder="Başlık, konum veya türe göre ara…">
+      </div>
+
+      <div class="property-grid" id="propertyList">
+        <div class="empty-state">
+          <div class="empty-icon">🏘️</div>
+          <h4>Henüz mülk eklenmedi</h4>
+          <p>Yukarıdaki formu kullanarak ilk mülkünüzü ekleyin.</p>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <script src="js/main.js"></script>
 </body>
 </html>
