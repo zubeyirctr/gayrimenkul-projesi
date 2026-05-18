@@ -2,10 +2,24 @@
 <html lang="tr">
 <head>
     <meta charset="UTF-8">
-    <title>Gayrimenkul Yönetim Sistemi</title>
+    <title>Gayrimenkul Yönetim Paneli</title>
+    <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
-    <h1>Gayrimenkul Yönetim Sistemi</h1>
-    <p>Sistem Analizi ve Tasarımı Dersi Projesi</p>
+    <div id="app">
+        <h1>Gayrimenkul Yönetim Paneli </h1>
+        
+        <input type="text" id="searchInput" placeholder="Mülk ara...">
+
+        <form id="propertyForm">
+            <input type="text" id="title" placeholder="Mülk Başlığı" required>
+            <input type="number" id="price" placeholder="Fiyat" required>
+            <button type="submit">Ekle </button>
+        </form>
+
+        <div id="propertyList">
+            </div>
+    </div>
+    <script src="js/main.js"></script>
 </body>
 </html>

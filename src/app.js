@@ -5,26 +5,25 @@ const YAML = require("yamljs");
 
 const app = express();
 
-//  JSON formatı 
 app.use(express.json());
 
-// Swagger dokümanını yükleme
-const swaggerDocument = YAML.load(path.join(__dirname, "swagger.yaml"));
 
-// Swagger UI'ı en üste ekleyelim ki rotalarla çakışmasın 
+const swaggerDocument = YAML.load(path.join(__dirname, "swagger.yaml"));
 app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 
-// Statik dosyalar (HTML, CSS, JS) 
+
 app.use(express.static(path.join(__dirname, "../public")));
 
-// SPA ana sayfa 
+
+const propertyRoutes = require("./routes/propertyRoutes");
+app.use("/api/properties", propertyRoutes);
+
+
 app.get("/", (req, res) => {
   res.sendFile(path.join(__dirname, "../public/index.html"));
 });
 
 const PORT = 3000;
-// Rotaları bağla 
-app.use("/api/properties", require("./routes/propertyRoutes"));
 app.listen(PORT, () => {
   console.log(`Sunucu http://localhost:${PORT} adresinde çalışıyor...`);
   console.log(`Dokümantasyon: http://localhost:${PORT}/api-docs`);
