@@ -1,25 +1,14 @@
 const express = require("express");
 const router = express.Router();
-const propertyService = require("../services/propertyService");
+const propertyController = require("../controllers/propertyController");
+const authMiddleware = require("../middleware/auth");
 
-// Tüm mülkleri listele (GET)
-router.get("/", async (req, res) => {
-  try {
-    const properties = await propertyService.getAllProperties();
-    res.json(properties);
-  } catch (err) {
-    res.status(500).json({ error: "Veriler alınamadı" });
-  }
-});
+router.use(authMiddleware);
 
-// Yeni mülk ekle (POST)
-router.post("/", async (req, res) => {
-  try {
-    const newProperty = await propertyService.createProperty(req.body);
-    res.status(201).json(newProperty);
-  } catch (err) {
-    res.status(500).json({ error: "Mülk eklenemedi" });
-  }
-});
+router.get("/", propertyController.getAll);
+router.get("/:id", propertyController.getById);
+router.post("/", propertyController.create);
+router.put("/:id", propertyController.update);
+router.delete("/:id", propertyController.remove);
 
 module.exports = router;
