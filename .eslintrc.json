@@ -12,6 +12,12 @@
     "indent": ["error", 2],
     "quotes": ["error", "double"],
     "semi": ["error", "always"],
-    "no-unused-vars": "warn"
+    "no-unused-vars": "warn",
+    "no-console": "warn",
+    "eqeqeq": ["error", "always"],
+    "no-var": "error",
+    "prefer-const": "error",
+    "no-trailing-spaces": "error",
+    "no-multiple-empty-lines": ["error", { "max": 1 }]
   }
 }
