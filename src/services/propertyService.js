@@ -21,7 +21,7 @@ const getPropertyById = (id, userId) => {
 };
 
 const createProperty = (data, userId) => {
-  const { title, price, type, location } = data;
+  const { title, price, type, location, description, room_count, square_meters, floor, image_url } = data;
 
   if (!title || price === null || price === undefined || price === "" || !type || !location) {
     return Promise.reject(new Error("title, price, type ve location zorunludur"));
@@ -40,11 +40,13 @@ const createProperty = (data, userId) => {
         if (existing) return reject(new Error("Bu mülk zaten kayıtlı"));
 
         db.run(
-          "INSERT INTO properties (title, price, type, location, user_id) VALUES (?, ?, ?, ?, ?)",
-          [title, price, type, location, userId],
+          `INSERT INTO properties
+            (title, price, type, location, description, room_count, square_meters, floor, image_url, user_id)
+           VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+          [title, price, type, location, description || null, room_count || null, square_meters || null, floor ?? null, image_url || null, userId],
           function (insertErr) {
             if (insertErr) return reject(insertErr);
-            resolve({ id: this.lastID, title, price, type, location, user_id: userId });
+            resolve({ id: this.lastID, title, price, type, location, description, room_count, square_meters, floor, image_url, user_id: userId });
           }
         );
       }
@@ -54,14 +56,17 @@ const createProperty = (data, userId) => {
 
 const updateProperty = (id, data, userId) => {
   return getPropertyById(id, userId).then(() => {
-    const { title, price, type, location } = data;
+    const { title, price, type, location, description, room_count, square_meters, floor, image_url } = data;
     return new Promise((resolve, reject) => {
       db.run(
-        "UPDATE properties SET title = ?, price = ?, type = ?, location = ? WHERE id = ? AND user_id = ?",
-        [title, price, type, location, id, userId],
+        `UPDATE properties
+         SET title = ?, price = ?, type = ?, location = ?,
+             description = ?, room_count = ?, square_meters = ?, floor = ?, image_url = ?
+         WHERE id = ? AND user_id = ?`,
+        [title, price, type, location, description || null, room_count || null, square_meters || null, floor ?? null, image_url || null, id, userId],
         function (err) {
           if (err) return reject(err);
-          resolve({ id: Number(id), title, price, type, location, user_id: userId });
+          resolve({ id: Number(id), title, price, type, location, description, room_count, square_meters, floor, image_url, user_id: userId });
         }
       );
     });

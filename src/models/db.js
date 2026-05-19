@@ -21,6 +21,11 @@ db.serialize(() => {
     price REAL NOT NULL,
     type TEXT,
     location TEXT,
+    description TEXT,
+    room_count INTEGER,
+    square_meters REAL,
+    floor INTEGER,
+    image_url TEXT,
     user_id INTEGER,
     FOREIGN KEY (user_id) REFERENCES users(id)
   )`);

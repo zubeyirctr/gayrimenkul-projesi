@@ -29,27 +29,37 @@ components:
     Property:
       type: object
       properties:
-        id:       { type: integer, example: 1 }
-        title:    { type: string,  example: "3+1 Daire Kadıköy" }
-        price:    { type: number,  example: 500000 }
+        id:            { type: integer, example: 1 }
+        title:         { type: string,  example: "3+1 Daire Kadıköy" }
+        price:         { type: number,  example: 500000 }
         type:
           type: string
           enum: [Satılık, Kiralık]
           example: Satılık
-        location: { type: string, example: "İstanbul, Kadıköy" }
-        user_id:  { type: integer, example: 1 }
+        location:      { type: string,  example: "İstanbul, Kadıköy" }
+        description:   { type: string,  nullable: true, example: "Geniş balkonlu, deniz manzaralı daire" }
+        room_count:    { type: integer, nullable: true, example: 3 }
+        square_meters: { type: number,  nullable: true, example: 120 }
+        floor:         { type: integer, nullable: true, example: 4 }
+        image_url:     { type: string,  nullable: true, example: "https://example.com/photo.jpg" }
+        user_id:       { type: integer, example: 1 }
 
     PropertyInput:
       type: object
       required: [title, price, type, location]
       properties:
-        title:    { type: string,  example: "3+1 Daire Kadıköy" }
-        price:    { type: number,  minimum: 1, example: 500000 }
+        title:         { type: string,  example: "3+1 Daire Kadıköy" }
+        price:         { type: number,  minimum: 1, example: 500000 }
         type:
           type: string
           enum: [Satılık, Kiralık]
           example: Satılık
-        location: { type: string, example: "İstanbul, Kadıköy" }
+        location:      { type: string,  example: "İstanbul, Kadıköy" }
+        description:   { type: string,  nullable: true, example: "Geniş balkonlu, deniz manzaralı daire" }
+        room_count:    { type: integer, nullable: true, minimum: 1, example: 3 }
+        square_meters: { type: number,  nullable: true, minimum: 1, example: 120 }
+        floor:         { type: integer, nullable: true, example: 4 }
+        image_url:     { type: string,  nullable: true, example: "https://example.com/photo.jpg" }
 
     Error:
       type: object

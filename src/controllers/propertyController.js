@@ -22,7 +22,11 @@ const getById = async (req, res) => {
 
 const create = async (req, res) => {
   try {
-    const property = await propertyService.createProperty(req.body, req.user.id);
+    const { title, price, type, location, description, room_count, square_meters, floor, image_url } = req.body;
+    const property = await propertyService.createProperty(
+      { title, price, type, location, description, room_count, square_meters, floor, image_url },
+      req.user.id
+    );
     res.status(201).json(property);
   } catch (err) {
     if (err.message === "Bu mülk zaten kayıtlı") return res.status(409).json({ error: err.message });
@@ -32,7 +36,12 @@ const create = async (req, res) => {
 
 const update = async (req, res) => {
   try {
-    const property = await propertyService.updateProperty(req.params.id, req.body, req.user.id);
+    const { title, price, type, location, description, room_count, square_meters, floor, image_url } = req.body;
+    const property = await propertyService.updateProperty(
+      req.params.id,
+      { title, price, type, location, description, room_count, square_meters, floor, image_url },
+      req.user.id
+    );
     res.json(property);
   } catch (err) {
     if (err.message === "Mülk bulunamadı") return res.status(404).json({ error: err.message });

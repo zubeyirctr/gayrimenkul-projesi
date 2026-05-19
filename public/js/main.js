@@ -92,11 +92,22 @@ function renderProperties(list) {
     return;
   }
 
-  container.innerHTML = list.map(p => `
+  container.innerHTML = list.map(p => {
+    const imageArea = p.image_url
+      ? `<div class="prop-card-image prop-card-photo" style="background-image:url('${escapeHtml(p.image_url)}')"></div>`
+      : `<div class="prop-card-image ${p.type === 'Satılık' ? 'img-satilik' : 'img-kiralik'}">
+           <span class="prop-card-img-icon">${p.type === 'Satılık' ? '🏠' : '🏢'}</span>
+         </div>`;
+
+    const metaItems = [
+      p.room_count  ? `<span class="prop-meta-item">🛏 ${p.room_count} oda</span>` : '',
+      p.square_meters ? `<span class="prop-meta-item">📐 ${p.square_meters} m²</span>` : '',
+      p.floor !== null && p.floor !== undefined ? `<span class="prop-meta-item">🏢 ${p.floor}. kat</span>` : ''
+    ].filter(Boolean).join('');
+
+    return `
     <div class="property-card">
-      <div class="prop-card-image ${p.type === 'Satılık' ? 'img-satilik' : 'img-kiralik'}">
-        <span class="prop-card-img-icon">${p.type === 'Satılık' ? '🏠' : '🏢'}</span>
-      </div>
+      ${imageArea}
       <div class="prop-card-body">
         <span class="prop-type-badge ${p.type === 'Satılık' ? 'type-satilik' : 'type-kiralik'}">
           ${escapeHtml(p.type)}
@@ -109,14 +120,16 @@ function renderProperties(list) {
           </svg>
           ${escapeHtml(p.location)}
         </p>
+        ${metaItems ? `<div class="prop-meta">${metaItems}</div>` : ''}
+        ${p.description ? `<p class="prop-description">${escapeHtml(p.description)}</p>` : ''}
         <p class="prop-price">₺ ${Number(p.price).toLocaleString('tr-TR')}</p>
         <div class="prop-actions">
           <button class="btn btn-warning btn-sm" onclick="startEdit(${p.id})">Düzenle</button>
           <button class="btn btn-danger btn-sm"  onclick="deleteProperty(${p.id})">Sil</button>
         </div>
       </div>
-    </div>
-  `).join('');
+    </div>`;
+  }).join('');
 }
 
 function escapeHtml(str) {
@@ -145,10 +158,15 @@ function startEdit(id) {
 
   editingId = id;
 
-  document.getElementById('title').value    = prop.title;
-  document.getElementById('price').value    = prop.price;
-  document.getElementById('type').value     = prop.type;
-  document.getElementById('location').value = prop.location;
+  document.getElementById('title').value        = prop.title;
+  document.getElementById('price').value        = prop.price;
+  document.getElementById('type').value         = prop.type;
+  document.getElementById('location').value     = prop.location;
+  document.getElementById('room_count').value   = prop.room_count    ?? '';
+  document.getElementById('square_meters').value = prop.square_meters ?? '';
+  document.getElementById('floor').value        = prop.floor         ?? '';
+  document.getElementById('image_url').value    = prop.image_url     || '';
+  document.getElementById('description').value  = prop.description   || '';
 
   document.getElementById('formTitle').textContent  = 'Mülk Düzenle';
   document.getElementById('submitBtn').textContent  = 'Güncelle';
@@ -195,11 +213,19 @@ document.addEventListener('DOMContentLoaded', () => {
     e.preventDefault();
     clearFormAlert();
 
+    const roomVal    = document.getElementById('room_count').value;
+    const sqmVal     = document.getElementById('square_meters').value;
+    const floorVal   = document.getElementById('floor').value;
     const data = {
-      title:    document.getElementById('title').value.trim(),
-      price:    Number(document.getElementById('price').value),
-      type:     document.getElementById('type').value,
-      location: document.getElementById('location').value.trim()
+      title:         document.getElementById('title').value.trim(),
+      price:         Number(document.getElementById('price').value),
+      type:          document.getElementById('type').value,
+      location:      document.getElementById('location').value.trim(),
+      description:   document.getElementById('description').value.trim() || null,
+      room_count:    roomVal    !== '' ? Number(roomVal)    : null,
+      square_meters: sqmVal     !== '' ? Number(sqmVal)     : null,
+      floor:         floorVal   !== '' ? Number(floorVal)   : null,
+      image_url:     document.getElementById('image_url').value.trim() || null
     };
 
     if (!data.title)              return showFormAlert('Başlık zorunludur.');

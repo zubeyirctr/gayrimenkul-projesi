@@ -552,6 +552,31 @@ body {
   color: var(--text-2);
   margin-bottom: .625rem;
 }
+.prop-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: .35rem;
+  margin-bottom: .6rem;
+}
+.prop-meta-item {
+  font-size: .75rem;
+  color: var(--text-2);
+  background: var(--border-2);
+  border-radius: 20px;
+  padding: .2rem .55rem;
+  font-weight: 500;
+}
+.prop-description {
+  font-size: .8rem;
+  color: var(--text-2);
+  line-height: 1.5;
+  margin-bottom: .625rem;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
 .prop-price {
   font-size: 1.125rem;
   font-weight: 800;
@@ -560,6 +585,12 @@ body {
   letter-spacing: -.02em;
 }
 .prop-actions { display: flex; gap: .5rem; }
+
+.prop-card-photo {
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+}
 
 /* ── Empty State ────────────────────────────────────────── */
 .empty-state {
