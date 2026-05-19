@@ -17,7 +17,7 @@ JWT tabanlı kimlik doğrulama ile çalışan, kullanıcıya özel mülk yöneti
 
 ```bash
 # 1. Repoyu klonla
-git clone <repo-url>
+git clone https://github.com/zubeyirctr/gayrimenkul-projesi.git
 cd gayrimenkul-projesi
 
 # 2. Bağımlılıkları yükle
