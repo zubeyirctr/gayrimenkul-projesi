@@ -62,6 +62,7 @@ describe('getPropertyById', () => {
 /* ===== createProperty ===== */
 describe('createProperty', () => {
   it('creates and returns the new property with user_id', async () => {
+    db.get.mockImplementation((sql, params, cb) => cb(null, null));
     db.run.mockImplementation(function (sql, params, cb) {
       cb.call({ lastID: 42 }, null);
     });
@@ -85,7 +86,14 @@ describe('createProperty', () => {
       .rejects.toThrow("0'dan büyük");
   });
 
-  it('rejects on database error', async () => {
+  it('rejects with "Bu mülk zaten kayıtlı" when duplicate exists', async () => {
+    db.get.mockImplementation((sql, params, cb) => cb(null, { id: 1 }));
+    await expect(createProperty({ title: 'Bahçeli Ev', price: 750000, type: 'Satılık', location: 'İzmir' }, 3))
+      .rejects.toThrow('Bu mülk zaten kayıtlı');
+  });
+
+  it('rejects on database error during insert', async () => {
+    db.get.mockImplementation((sql, params, cb) => cb(null, null));
     db.run.mockImplementation(function (sql, params, cb) {
       cb.call({}, new Error('Insert failed'));
     });

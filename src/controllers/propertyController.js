@@ -5,7 +5,7 @@ const getAll = async (req, res) => {
     const properties = await propertyService.getAllProperties(req.user.id);
     res.json(properties);
   } catch {
-    res.status(500).json({ error: "Veriler alınamadı" });
+    res.status(500).json({ error: "Sunucu hatası" });
   }
 };
 
@@ -14,9 +14,9 @@ const getById = async (req, res) => {
     const property = await propertyService.getPropertyById(req.params.id, req.user.id);
     res.json(property);
   } catch (err) {
-    if (err.message === "Mülk bulunamadı") return res.status(404).json({ error: err.message });
-    if (err.message === "Bu mülke erişim yetkiniz yok") return res.status(403).json({ error: err.message });
-    res.status(500).json({ error: "Mülk alınamadı" });
+    if (err.message === "Mülk bulunamadı") return res.status(404).json({ error: "Mülk bulunamadı" });
+    if (err.message.includes("erişim yetkiniz yok")) return res.status(403).json({ error: "Bu işlem için yetkiniz yok" });
+    res.status(500).json({ error: "Sunucu hatası" });
   }
 };
 
@@ -44,9 +44,9 @@ const update = async (req, res) => {
     );
     res.json(property);
   } catch (err) {
-    if (err.message === "Mülk bulunamadı") return res.status(404).json({ error: err.message });
-    if (err.message === "Bu mülke erişim yetkiniz yok") return res.status(403).json({ error: err.message });
-    res.status(500).json({ error: "Mülk güncellenemedi" });
+    if (err.message === "Mülk bulunamadı") return res.status(404).json({ error: "Mülk bulunamadı" });
+    if (err.message.includes("erişim yetkiniz yok")) return res.status(403).json({ error: "Bu işlem için yetkiniz yok" });
+    res.status(500).json({ error: "Sunucu hatası" });
   }
 };
 
@@ -55,9 +55,9 @@ const remove = async (req, res) => {
     const result = await propertyService.deleteProperty(req.params.id, req.user.id);
     res.json(result);
   } catch (err) {
-    if (err.message === "Mülk bulunamadı") return res.status(404).json({ error: err.message });
-    if (err.message === "Bu mülke erişim yetkiniz yok") return res.status(403).json({ error: err.message });
-    res.status(500).json({ error: "Mülk silinemedi" });
+    if (err.message === "Mülk bulunamadı") return res.status(404).json({ error: "Mülk bulunamadı" });
+    if (err.message.includes("erişim yetkiniz yok")) return res.status(403).json({ error: "Bu işlem için yetkiniz yok" });
+    res.status(500).json({ error: "Sunucu hatası" });
   }
 };
 
