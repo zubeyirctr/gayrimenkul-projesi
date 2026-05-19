@@ -85,7 +85,7 @@ function renderProperties(list) {
   if (list.length === 0) {
     container.innerHTML = `
       <div class="empty-state">
-        <div class="empty-icon">🏘️</div>
+        <div class="empty-icon"></div>
         <h4>Mülk bulunamadı</h4>
         <p>Arama kriterlerinizi değiştirin veya yeni mülk ekleyin.</p>
       </div>`;
@@ -94,21 +94,26 @@ function renderProperties(list) {
 
   container.innerHTML = list.map(p => `
     <div class="property-card">
-      <span class="prop-type-badge ${p.type === 'Satılık' ? 'type-satilik' : 'type-kiralik'}">
-        ${escapeHtml(p.type)}
-      </span>
-      <h3 class="prop-title">${escapeHtml(p.title)}</h3>
-      <p class="prop-location">
-        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
-          <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z"/>
-          <circle cx="12" cy="9" r="2.5"/>
-        </svg>
-        ${escapeHtml(p.location)}
-      </p>
-      <p class="prop-price">₺ ${Number(p.price).toLocaleString('tr-TR')}</p>
-      <div class="prop-actions">
-        <button class="btn btn-warning btn-sm" onclick="startEdit(${p.id})">Düzenle</button>
-        <button class="btn btn-danger btn-sm"  onclick="deleteProperty(${p.id})">Sil</button>
+      <div class="prop-card-image ${p.type === 'Satılık' ? 'img-satilik' : 'img-kiralik'}">
+        <span class="prop-card-img-icon">${p.type === 'Satılık' ? '🏠' : '🏢'}</span>
+      </div>
+      <div class="prop-card-body">
+        <span class="prop-type-badge ${p.type === 'Satılık' ? 'type-satilik' : 'type-kiralik'}">
+          ${escapeHtml(p.type)}
+        </span>
+        <h3 class="prop-title">${escapeHtml(p.title)}</h3>
+        <p class="prop-location">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+            <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z"/>
+            <circle cx="12" cy="9" r="2.5"/>
+          </svg>
+          ${escapeHtml(p.location)}
+        </p>
+        <p class="prop-price">₺ ${Number(p.price).toLocaleString('tr-TR')}</p>
+        <div class="prop-actions">
+          <button class="btn btn-warning btn-sm" onclick="startEdit(${p.id})">Düzenle</button>
+          <button class="btn btn-danger btn-sm"  onclick="deleteProperty(${p.id})">Sil</button>
+        </div>
       </div>
     </div>
   `).join('');
