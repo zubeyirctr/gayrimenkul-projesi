@@ -25,6 +25,7 @@ const create = async (req, res) => {
     const property = await propertyService.createProperty(req.body, req.user.id);
     res.status(201).json(property);
   } catch (err) {
+    if (err.message === "Bu mülk zaten kayıtlı") return res.status(409).json({ error: err.message });
     res.status(400).json({ error: err.message });
   }
 };

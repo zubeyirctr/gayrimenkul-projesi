@@ -32,12 +32,21 @@ const createProperty = (data, userId) => {
   }
 
   return new Promise((resolve, reject) => {
-    db.run(
-      "INSERT INTO properties (title, price, type, location, user_id) VALUES (?, ?, ?, ?, ?)",
-      [title, price, type, location, userId],
-      function (err) {
+    db.get(
+      "SELECT id FROM properties WHERE title = ? AND location = ? AND user_id = ?",
+      [title, location, userId],
+      (err, existing) => {
         if (err) return reject(err);
-        resolve({ id: this.lastID, title, price, type, location, user_id: userId });
+        if (existing) return reject(new Error("Bu mülk zaten kayıtlı"));
+
+        db.run(
+          "INSERT INTO properties (title, price, type, location, user_id) VALUES (?, ?, ?, ?, ?)",
+          [title, price, type, location, userId],
+          function (insertErr) {
+            if (insertErr) return reject(insertErr);
+            resolve({ id: this.lastID, title, price, type, location, user_id: userId });
+          }
+        );
       }
     );
   });
