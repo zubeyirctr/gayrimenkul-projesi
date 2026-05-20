@@ -13,8 +13,6 @@ db.serialize(() => {
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP
   )`);
 
-  db.run("DROP TABLE IF EXISTS properties");
-
   db.run(`CREATE TABLE IF NOT EXISTS properties (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     title TEXT NOT NULL,

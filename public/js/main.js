@@ -75,12 +75,28 @@ async function deleteProperty(id) {
   }
 }
 
+/* ===== STATS ===== */
+function updateStats() {
+  const total    = allProperties.length;
+  const satilik  = allProperties.filter(p => p.type === 'Satılık').length;
+  const kiralik  = allProperties.filter(p => p.type === 'Kiralık').length;
+  const avgPrice = total
+    ? Math.round(allProperties.reduce((s, p) => s + p.price, 0) / total).toLocaleString('tr-TR')
+    : 0;
+
+  document.getElementById('statTotal').textContent    = total;
+  document.getElementById('statSatilik').textContent  = satilik;
+  document.getElementById('statKiralik').textContent  = kiralik;
+  document.getElementById('statAvgPrice').textContent = avgPrice;
+}
+
 /* ===== RENDER ===== */
 function renderProperties(list) {
   const container = document.getElementById('propertyList');
   const countEl   = document.getElementById('propertyCount');
 
   countEl.textContent = `${list.length} mülk`;
+  updateStats();
 
   if (list.length === 0) {
     container.innerHTML = `
@@ -162,11 +178,11 @@ function startEdit(id) {
   document.getElementById('price').value        = prop.price;
   document.getElementById('type').value         = prop.type;
   document.getElementById('location').value     = prop.location;
-  document.getElementById('room_count').value   = prop.room_count    ?? '';
+  document.getElementById('room_count').value    = prop.room_count    ?? '';
   document.getElementById('square_meters').value = prop.square_meters ?? '';
-  document.getElementById('floor').value        = prop.floor         ?? '';
-  document.getElementById('image_url').value    = prop.image_url     || '';
-  document.getElementById('description').value  = prop.description   || '';
+  document.getElementById('floor').value         = prop.floor         ?? '';
+  document.getElementById('image_file').value    = '';
+  document.getElementById('description').value   = prop.description   || '';
 
   document.getElementById('formTitle').textContent  = 'Mülk Düzenle';
   document.getElementById('submitBtn').textContent  = 'Güncelle';
@@ -213,25 +229,34 @@ document.addEventListener('DOMContentLoaded', () => {
     e.preventDefault();
     clearFormAlert();
 
-    const roomVal    = document.getElementById('room_count').value;
-    const sqmVal     = document.getElementById('square_meters').value;
-    const floorVal   = document.getElementById('floor').value;
+    const roomVal  = document.getElementById('room_count').value;
+    const sqmVal   = document.getElementById('square_meters').value;
+    const floorVal = document.getElementById('floor').value;
     const data = {
       title:         document.getElementById('title').value.trim(),
       price:         Number(document.getElementById('price').value),
       type:          document.getElementById('type').value,
       location:      document.getElementById('location').value.trim(),
       description:   document.getElementById('description').value.trim() || null,
-      room_count:    roomVal    !== '' ? Number(roomVal)    : null,
-      square_meters: sqmVal     !== '' ? Number(sqmVal)     : null,
-      floor:         floorVal   !== '' ? Number(floorVal)   : null,
-      image_url:     document.getElementById('image_url').value.trim() || null
+      room_count:    roomVal  !== '' ? Number(roomVal)  : null,
+      square_meters: sqmVal   !== '' ? Number(sqmVal)   : null,
+      floor:         floorVal !== '' ? Number(floorVal) : null,
+      image_url:     null
     };
 
-    if (!data.title)              return showFormAlert('Başlık zorunludur.');
+    if (!data.title)                   return showFormAlert('Başlık zorunludur.');
     if (!data.price || data.price <= 0) return showFormAlert('Geçerli bir fiyat girin (0\'dan büyük).');
-    if (!data.type)               return showFormAlert('Mülk türü seçilmelidir.');
-    if (!data.location)           return showFormAlert('Konum zorunludur.');
+    if (!data.type)                    return showFormAlert('Mülk türü seçilmelidir.');
+    if (!data.location)                return showFormAlert('Konum zorunludur.');
+
+    const fileInput = document.getElementById('image_file');
+    if (fileInput.files && fileInput.files[0]) {
+      data.image_url = await new Promise((resolve) => {
+        const reader = new FileReader();
+        reader.onload = (ev) => resolve(ev.target.result);
+        reader.readAsDataURL(fileInput.files[0]);
+      });
+    }
 
     const btn = document.getElementById('submitBtn');
     btn.disabled    = true;
