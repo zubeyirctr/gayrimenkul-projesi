@@ -1,6 +1,7 @@
 /* ===== STATE ===== */
-let allProperties = [];
-let editingId     = null;
+let allProperties    = [];
+let editingId        = null;
+let editingImageUrl  = null;
 
 /* ===== AUTH HELPERS ===== */
 const getToken = () => localStorage.getItem('token');
@@ -172,7 +173,8 @@ function startEdit(id) {
   const prop = allProperties.find(p => p.id === id);
   if (!prop) return;
 
-  editingId = id;
+  editingId       = id;
+  editingImageUrl = prop.image_url || null;
 
   document.getElementById('title').value        = prop.title;
   document.getElementById('price').value        = prop.price;
@@ -193,7 +195,8 @@ function startEdit(id) {
 }
 
 function cancelEdit() {
-  editingId = null;
+  editingId       = null;
+  editingImageUrl = null;
   document.getElementById('propertyForm').reset();
   document.getElementById('formTitle').textContent   = 'Yeni Mülk Ekle';
   document.getElementById('submitBtn').textContent   = 'Mülk Ekle';
@@ -256,6 +259,8 @@ document.addEventListener('DOMContentLoaded', () => {
         reader.onload = (ev) => resolve(ev.target.result);
         reader.readAsDataURL(fileInput.files[0]);
       });
+    } else if (editingId && editingImageUrl) {
+      data.image_url = editingImageUrl;
     }
 
     const btn = document.getElementById('submitBtn');
